@@ -6,14 +6,6 @@ package com.javarush.task.task22.task2201;
 
 public class Solution {
     public static void main(String[] args) {
-
-/*
-        System.out.println("Тут начало");
-        System.out.println("A\tB\tC\tD\tE\tF\tG\tH\tI");
-        System.out.println(getPartOfString("\t\t", Thread.currentThread().getName()));
-        System.out.println("Тут конец");
-*/
-
         new Solution();
     }
 
@@ -40,27 +32,26 @@ public class Solution {
         this.thread3.start();
     }
 
-    public static synchronized String getPartOfString(String string, String threadName) {
-
-        try {
+    public synchronized String getPartOfString(String string, String threadName) {
+        try{
             int start = string.indexOf("\t");
             int end = string.lastIndexOf("\t");
-            return string.substring(start, end);
-        } catch (Exception e){
-            if (threadName.equals(Solution.FIRST_THREAD_NAME)){
-                throw new StringForFirstThreadTooShortException();
-            }
-            else if (threadName.equals(Solution.SECOND_THREAD_NAME)){
-                throw new StringForSecondThreadTooShortException();
-            }
-            else{
-                throw new RuntimeException();
+            return string.substring(start + 1, end);
+        } catch (NullPointerException | StringIndexOutOfBoundsException e){
+            if (threadName.equals(FIRST_THREAD_NAME)){
+                StringForFirstThreadTooShortException stringForFirstThreadTooShortException = new StringForFirstThreadTooShortException();
+                stringForFirstThreadTooShortException.initCause(e);
+                throw stringForFirstThreadTooShortException;
+            } else if (threadName.equals(SECOND_THREAD_NAME)){
+                StringForSecondThreadTooShortException stringForSecondThreadTooShortException = new StringForSecondThreadTooShortException();
+                stringForSecondThreadTooShortException.initCause(e);
+                throw stringForSecondThreadTooShortException;
+            } else {
+                throw new RuntimeException(e);
             }
         }
     }
 }
-
-
 
 
 
