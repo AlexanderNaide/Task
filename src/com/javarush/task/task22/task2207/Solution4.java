@@ -2,58 +2,44 @@ package com.javarush.task.task22.task2207;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 /*
 Обращенные слова
 */
 
-//C:\\text.txt
-
-public class Solution {
+public class Solution4 {
     public static List<Pair> result = new LinkedList<>();
 
-    public static void main(String[] args) throws IOException {
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        String fileName = reader.readLine();
-        StringBuilder sb = new StringBuilder();
-        reader = new BufferedReader(new FileReader(fileName));
-        while(reader.ready()){
-            sb.append(reader.readLine());
-            sb.append(" ");
+    public static void main(String[] args) throws Exception {
+        List<String> words = new ArrayList<>();
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader fileReader = new BufferedReader(new FileReader(bufferedReader.readLine()));
+        bufferedReader.close();
+        while (fileReader.ready()) {
+            words.addAll(Arrays.asList(fileReader.readLine().split(" ")));
         }
-        reader.close();
-        sb.deleteCharAt(0);
-        sb.deleteCharAt(sb.length() - 1);
-        ArrayList<String> list = new ArrayList<>();
-        Collections.addAll(list, sb.toString().split(" "));
-        boolean tr;
-        for (int i = 0; i < list.size(); ) {
-            tr = false;
-            String firstString = list.get(i);
-            for (int j = i + 1; j < list.size(); ) {
-                String secondString = list.get(j);
-                StringBuilder secondStringBuilder = new StringBuilder(secondString);
-                secondStringBuilder.reverse();
+        fileReader.close();
 
-                if (firstString.equals(secondStringBuilder.toString())){
-                    Pair pair = new Pair();
-                    pair.first = firstString;
-                    pair.second = secondString;
-                    result.add(pair);
-                    list.remove(firstString);
-                    list.remove(secondString);
-                    tr = true;
+        for (int i = 0; i < words.size(); i++) {
+            for (int j = 0; j < words.size(); ) {
+                if (i >= words.size()) {
                     break;
-                } else {
-                    j++;
                 }
-            }
-            if (!tr){
-                i++;
+                if (words.get(j).equals(new StringBuilder(words.get(i)).reverse().toString()) && j != i) {
+                    Pair pair = new Pair();
+                    pair.first = words.get(j);
+                    pair.second = words.get(i);
+                    result.add(pair);
+                    words.remove(j);
+                    words.remove(i);
+                    j = 0;
+                } else
+                    j++;
             }
         }
         for (Pair pair : result) {
@@ -64,8 +50,6 @@ public class Solution {
     public static class Pair {
         String first;
         String second;
-
-        public Pair(){}
 
         @Override
         public boolean equals(Object o) {
